@@ -56,6 +56,8 @@ def main():
     print(f"Last date: {get_last_date(instrument_prices)}")
     print()
     print("Benchmark")
+    print(f"Market: {instrument['market']}")
+    print(f"Market: {benchmark['market']}")
     print(f"{benchmark['ticker']} - {benchmark['name']}")
     print(f"Last level: {benchmark_latest['close']}")
     print(f"First date: {get_first_date(benchmark_prices)}")
