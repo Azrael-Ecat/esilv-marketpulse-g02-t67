@@ -12,6 +12,14 @@ LOOKBACK_LABEL = "1 month"
 INTERVAL_LABEL = "Daily"
 
 
+def get_first_date(prices):
+    return prices[0]["date"]
+
+
+def get_last_date(prices):
+    return prices[-1]["date"]
+
+
 def load_instruments():
     with open(DATA_DIR / "instruments.json", encoding="utf-8") as file:
         return json.load(file)
@@ -44,10 +52,14 @@ def main():
     print("Instrument")
     print(f"{instrument['ticker']} - {instrument['name']}")
     print(f"Last price: {instrument_latest['close']} {instrument['currency']}")
+    print(f"First date: {get_first_date(instrument_prices)}")
+    print(f"Last date: {get_last_date(instrument_prices)}")
     print()
     print("Benchmark")
     print(f"{benchmark['ticker']} - {benchmark['name']}")
     print(f"Last level: {benchmark_latest['close']}")
+    print(f"First date: {get_first_date(benchmark_prices)}")
+    print(f"Last date: {get_last_date(benchmark_prices)}")
     print()
     print(f"Period: {LOOKBACK_LABEL}")
     print(f"Interval: {INTERVAL_LABEL}")
