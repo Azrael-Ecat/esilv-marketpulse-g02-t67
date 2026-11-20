@@ -1,0 +1,107 @@
+"""MarketPulse - TD02 sandbox, cleaned and scripted.
+
+Source notebook : notebooks/00_td02_sandbox.ipynb
+Cleaning applied:
+- removed the exploratory cells (Python refresher, mock data, CSV type-trap demo);
+- kept only the reusable functions: loading, filtering, first/last close,
+  market summary;
+- grouped the notebook test cells into one validate() function;
+- added a single main() entry point, as in src/main.py.
+
+Run from the repository root:
+    python evidence/notebooks/Azrael-Ecat/00_td02_sandbox_script.txt
+"""
+
+from pathlib import Path
+import csv
+import json
+
+
+CURRENT_DIR = Path.cwd()
+PROJECT_ROOT = CURRENT_DIR if (CURRENT_DIR / "data").exists() else CURRENT_DIR.parent
+DATA_DIR = PROJECT_ROOT / "data" / "sample"
+
+LOOKBACK_LABEL = "1 month"
+INTERVAL_LABEL = "Daily"
+
+
+def load_instruments(filepath=DATA_DIR / "instruments.json"):
+    """Load the instrument and benchmark metadata (JSON)."""
+    with open(filepath, mode="r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def load_prices(filepath=DATA_DIR / "prices.csv"):
+    """Load all daily observations (CSV) as a list of dictionaries."""
+    with open(filepath, mode="r", encoding="utf-8") as file:
+        return list(csv.DictReader(file))
+
+
+def filter_prices(prices, ticker):
+    """Keep only the observations of one ticker."""
+    return [row for row in prices if row["ticker"] == ticker]
+
+
+def get_first_close(prices):
+    """First close of a series, converted from str to float."""
+    if not prices:
+        return 0.0
+    return float(prices[0]["close"])
+
+
+def get_last_close(prices):
+    """Last close of a series, converted from str to float."""
+    if not prices:
+        return 0.0
+    return float(prices[-1]["close"])
+
+
+def display_market_summary(asset, prices, show_currency=True):
+    """Print the same summary block for any instrument or benchmark."""
+    first_close = get_first_close(prices)
+    last_close = get_last_close(prices)
+    currency_suffix = f" {asset.get('currency', '')}" if show_currency else ""
+
+    print(f"{asset['ticker']} - {asset['name']}")
+    print(f"Observations : {len(prices)}")
+    print(f"First close  : {first_close:.2f}{currency_suffix}")
+    print(f"Last close   : {last_close:.2f}{currency_suffix}")
+
+
+def validate(instrument_prices, benchmark_prices):
+    """TD02 CORE checks taken from the notebook test cells."""
+    assert len(instrument_prices) == 21, "Expected 21 observations for AAPL"
+    assert len(benchmark_prices) == 21, "Expected 21 observations for SP500"
+    assert get_first_close(instrument_prices) == 250.00
+    assert get_last_close(instrument_prices) == 266.20
+    assert get_first_close(benchmark_prices) == 6600.00
+    assert get_last_close(benchmark_prices) == 6742.00
+
+
+def main():
+    instruments = load_instruments()
+    prices = load_prices()
+
+    instrument = instruments["instrument"]
+    benchmark = instruments["benchmark"]
+
+    instrument_prices = filter_prices(prices, instrument["ticker"])
+    benchmark_prices = filter_prices(prices, benchmark["ticker"])
+
+    validate(instrument_prices, benchmark_prices)
+
+    print("=== MarketPulse ===")
+    print()
+    print("Market configuration")
+    print(f"Period   : {LOOKBACK_LABEL}")
+    print(f"Interval : {INTERVAL_LABEL}")
+    print()
+    print("Instrument")
+    display_market_summary(instrument, instrument_prices, show_currency=True)
+    print()
+    print("Benchmark")
+    display_market_summary(benchmark, benchmark_prices, show_currency=False)
+
+
+if __name__ == "__main__":
+    main()
