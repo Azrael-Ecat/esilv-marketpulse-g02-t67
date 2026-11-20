@@ -14,7 +14,7 @@ Copy this file to `TEAM.md` in your team repository and complete it before start
 |---|---|
 | Enzo Catheline | @Azrael-Ecat |
 | Ilyas kabchi | @Ilyasskka |
-| Student 3 | @github-user-3 |
+| Jules NGUYEN | @Jules594 |
 
 Add a fourth row only if your team has four members.
 
