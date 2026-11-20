@@ -50,6 +50,8 @@ def display_market_summary(asset, prices, show_currency=True):
 
     print(f"{ticker} - {name}")
     print(f"Observations : {len(prices)}")
+    print(f"First date   : {get_first_date(prices)}")
+    print(f"Last date    : {get_last_date(prices)}")
     print(f"First close  : {first_close:.2f}{currency}")
     print(f"Last close   : {last_close:.2f}{currency}")
 
