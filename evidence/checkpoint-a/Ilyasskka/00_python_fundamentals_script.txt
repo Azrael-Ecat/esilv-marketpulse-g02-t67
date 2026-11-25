@@ -1,0 +1,543 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# # 📘 Python Programming Fundamentals & The MarketPulse Mental Model
+# ## 🎓 Des Fondations de la Programmation jusqu'à l'Ingénierie Logicielle Financière
+# 
+# Bienvenue dans le notebook de référence fondamental de **MarketPulse**.
+# 
+# Ce notebook a été spécialement conçu pour établir un **modèle mental solide** de la programmation en Python, en partant des principes fondamentaux jusqu'à leur concrétisation dans l'architecture de MarketPulse.
+# 
+# ---
+# 
+# ### 🧠 Le Modèle Mental d'Apprentissage :
+# 
+# ```text
+# PROGRAMMING FUNDAMENTALS
+#         │
+#         ▼
+# Python syntax & semantics (Variables, Types dynamiques, Cast, Strings)
+#         │
+#         ▼
+# Control flow (Conditions if/elif/else, Boucles for/while, Logique booléenne)
+#         │
+#         ▼
+# Data structures (Lists, Tuples, Dictionaries, Sets, Immutabilité)
+#         │
+#         ▼
+# Functions & Scope (Paramètres, Return vs Print, Portée locale/globale, Pureté)
+#         │
+#         ▼
+# Exceptions & Robustness (try/except/finally, gestion défensive des erreurs)
+#         │
+#         ▼
+# Problem solving (Décomposition IPO, Compréhensions, Alignement)
+#         │
+#         ▼
+# Debugging (Lecture de Traceback, Inspections, Assertions)
+#         │
+#         ▼
+# Small programs (Structure modulaire, __name__ == '__main__', Pathlib)
+#         │
+#         ▼
+# MarketPulse (L'application financière complète : CSV, JSON, Analytics, CLI & Dash)
+# ```
+# 
+# ---
+# 
+# Chaque section de ce cours interactif articule **la notion fondamentale**, **un exemple élémentaire**, et **son application directe dans MarketPulse**.
+
+# --- 
+# # 1. Python Syntax & Semantics
+# 
+# La syntaxe définit la grammaire du langage ; la sémantique définit ce que le code signifie et comment l'ordinateur l'exécute.
+
+# ### 1.1 Variables & Affectation en Mémoire
+# 
+# * **Concept** : En Python, une variable est une **étiquette (label)** qui pointe vers un objet stocké en mémoire. Le signe `=` ne signifie pas l'égalité mathématique, mais l'**affectation** (le membre de droite est évalué, puis lié au nom de gauche).
+# * **Conventions** : Les variables s'écrivent en `snake_case` (ex: `closing_price`, `portfolio_value`). Les constantes s'écrivent en `UPPER_SNAKE_CASE` (ex: `DATA_DIR`).
+
+# In[1]:
+
+
+# Affectation de variables
+ticker = "AAPL"
+initial_price = 250.00
+trade_volume = 1500
+is_trading_open = True
+market_notes = None
+
+print(f"Ticker : {ticker} (Type : {type(ticker).__name__})")
+print(f"Prix   : {initial_price} (Type : {type(initial_price).__name__})")
+print(f"Volume : {trade_volume} (Type : {type(trade_volume).__name__})")
+print(f"Actif  : {is_trading_open} (Type : {type(is_trading_open).__name__})")
+print(f"Notes  : {market_notes} (Type : {type(market_notes).__name__})")
+
+
+# ### 1.2 Typage Dynamique & Conversion Explicite (Type Casting)
+# 
+# * **Concept** : Python est à typage **dynamique** (les types sont déterminés à l'exécution) mais **fortement typé** (Python ne convertit pas silencieusement des types incompatibles).
+# * ⚠️ **Le piège majeur en finance** : Les fichiers texte (CSV, JSON brut, entrées utilisateur) arrivent **toujours sous forme de chaînes de caractères (`str`)**.
+
+# In[2]:
+
+
+# Deux chaînes de caractères reçues d'un fichier CSV :
+val_a = "250.00"
+val_b = "10.00"
+
+# Concaténation textuelle involontaire :
+print("Concaténation sans conversion  :", val_a + val_b)  # '250.0010.00' (Erreur classique !)
+
+# Conversion explicite (Type Casting) en float :
+price_a = float(val_a)
+price_b = float(val_b)
+print("Addition arithmétique correcte :", price_a + price_b) # 260.00
+
+
+# ### 1.3 Chaînes de Caractères (`str`) & Formatage Avancé (`f-strings`)
+# 
+# * **Concept** : Une chaîne est une séquence immuable de caractères. Les `f-strings` (`f"{expression:format}"`) permettent d'injecter des variables et de contrôler les décimales, l'alignement et les signes arithmétiques.
+
+# In[3]:
+
+
+name = "Apple Inc."
+perf_pct = 6.48192
+alpha = -1.2504
+
+# Méthodes courantes de nettoyage de chaînes :
+raw_input = "   AAPL  \n"
+clean_ticker = raw_input.strip().upper()
+print(f"Nettoyage : '{raw_input}' -> '{clean_ticker}'")
+
+# Formatage de précision avec f-strings (capital pour les rapports de trading) :
+print(f"Actif      : {name:<15s} | Ticker : {clean_ticker}")
+print(f"Rendement  : {perf_pct:+.2f}%  (signe explicite, 2 décimales)")
+print(f"Alpha      : {alpha:+.2f} pp")
+
+
+# --- 
+# # 2. Control Flow (Flux d'Exécution)
+# 
+# Le contrôle de flux détermine l'ordre dans lequel les instructions sont exécutées en fonction de conditions et d'itérations.
+
+# ### 2.1 Conditions & Logique Booléenne (`if / elif / else`)
+# 
+# * **Concept** : Évalue des expressions logiques (`True` ou `False`) avec les opérateurs de comparaison (`==`, `!=`, `<`, `>`, `<=`, `>=`) et logiques (`and`, `or`, `not`).
+# * **Valeurs considérées comme Fausses (Falsy)** : `0`, `0.0`, `""`, `[]`, `{}`, `None`. Tout le reste est `Truthy`.
+
+# In[4]:
+
+
+relative_perf = 4.33
+
+if relative_perf > 0:
+    market_status = "SURPERFORMANCE (Outperforming benchmark)"
+elif relative_perf < 0:
+    market_status = "SOUS-PERFORMANCE (Underperforming benchmark)"
+else:
+    market_status = "NEUTRE (Neutral)"
+
+print(f"Diagnostic : {market_status}")
+
+# Test de Truthiness défensif : vérifier si une liste de prix n'est pas vide
+empty_prices = []
+if not empty_prices:
+    print("Sécurité : Aucune observation détectée, calcul annulé.")
+
+
+# ### 2.2 Boucles (`for` & `while`)
+# 
+# * **`for`** : Itère sur une séquence (liste, dictionnaire, chaîne, range). C'est la boucle standard de traitement de données.
+# * **`while`** : Répète un bloc tant qu'une condition reste vraie.
+# * **Contrôles** : `break` (interrompt la boucle immédiatement), `continue` (passe à l'itération suivante).
+
+# In[5]:
+
+
+sample_tickers = ["AAPL", "MSFT", "STOP_TOKEN", "NVDA"]
+
+# 1. Boucle for avec enumerate() pour obtenir l'index et la valeur
+print("--- Parcours de la liste d'instruments ---")
+for idx, item in enumerate(sample_tickers, start=1):
+    if item == "STOP_TOKEN":
+        print(f"  [{idx}] Jeton d'arrêt détecté ! Arrêt immédiat.")
+        break
+    print(f"  [{idx}] Traitement de l'actif : {item}")
+
+# 2. Boucle while (simulant un retry de connexion ou de chargement)
+attempts = 0
+max_attempts = 3
+connected = False
+
+while attempts < max_attempts and not connected:
+    attempts += 1
+    if attempts == 2: # Connexion réussie à la 2ème tentative
+        connected = True
+
+print(f"Connexion au provider établie après {attempts} tentative(s).")
+
+
+# --- 
+# # 3. Data Structures (Structures de Données)
+# 
+# Le choix de la structure de données détermine l'élégance, la lisibilité et la complexité algorithmique de votre code.
+
+# ### 3.1 Listes (`list`) : Collections Ordonnées & Mutables
+# 
+# * **Concept** : Une liste conserve l'ordre d'insertion et peut être modifiée (`.append()`, `.pop()`, réassignation). Indexée à partir de `0`.
+
+# In[6]:
+
+
+daily_closes = [248.50, 250.00, 251.30]
+daily_closes.append(254.20) # Ajout à la fin
+
+print("Liste complète :", daily_closes)
+print("Premier élément [0]  :", daily_closes[0])
+print("Dernier élément [-1] :", daily_closes[-1])
+print("Slicing [1:3]        :", daily_closes[1:3]) # Éléments d'indice 1 et 2 (exclut le 3)
+print("Taille len()         :", len(daily_closes))
+
+
+# ### 3.2 Tuples (`tuple`) : Collections Ordonnées & Immuables
+# 
+# * **Concept** : Identique à une liste mais **non modifiable** après création. Protège l'intégrité des données.
+# * **Cas d'usage** : Retourner plusieurs valeurs depuis une fonction sans créer d'objet complexe.
+
+# In[7]:
+
+
+# Création et déballage (unpacking) d'un tuple
+market_coordinate = ("AAPL", "NASDAQ", "USD")
+sym, exchange, curr = market_coordinate
+
+print(f"Symbole: {sym}, Bourse: {exchange}, Devise: {curr}")
+
+# Démonstration d'immuabilité (décommentez la ligne ci-dessous pour voir l'erreur TypeError) :
+# market_coordinate[0] = "GOOGL"  # Lève TypeError: 'tuple' object does not support item assignment
+
+
+# ### 3.3 Dictionnaires (`dict`) : Mappings Clé-Valeur en Temps Constant $O(1)$
+# 
+# * **Concept** : Associe une clé unique (hachable) à une valeur. L'accès par clé est quasi-instantané quelle que soit la taille du dictionnaire.
+# * **Cas d'usage MarketPulse** : C'est la structure centrale ! Les métadonnées d'actifs, les paramètres de configuration, et chaque ligne de marché (`Canonical Row`) sont des dictionnaires.
+
+# In[8]:
+
+
+# Représentation d'une observation de marché canonique dans MarketPulse
+canonical_observation = {
+    "date": "2026-09-01",
+    "ticker": "AAPL",
+    "open": 249.20,
+    "high": 251.50,
+    "low": 248.00,
+    "close": 250.00,
+    "volume": 38000000,
+}
+
+# Accès par clé direct
+print("Date de clôture :", canonical_observation["date"])
+print("Cours de clôture :", canonical_observation["close"])
+
+# Accès sécurisé avec valeur de repli par défaut (.get)
+adj_close = canonical_observation.get("adj_close", canonical_observation["close"])
+print("Adjusted Close (avec fallback) :", adj_close)
+
+# Parcours clé-valeur avec .items()
+print("\n--- Champs de l'observation canonique ---")
+for key, val in canonical_observation.items():
+    print(f"  {key:<8s} -> {val}")
+
+
+# ### 3.4 Ensembles (`set`) : Unicité & Opérations Mathématiques
+# 
+# * **Concept** : Collection d'éléments uniques non ordonnés. Offre des opérations ensemblistes puissantes : union (`|`), intersection (`&`), différence (`-`).
+# * **Cas d'usage MarketPulse** : Synchroniser les dates communes entre deux actifs ayant des calendriers de cotation différents.
+
+# In[9]:
+
+
+dates_aapl = {"2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04"}
+dates_sp500 = {"2026-09-02", "2026-09-03", "2026-09-04", "2026-09-05"}
+
+# Intersection ensembliste &
+common_trading_days = sorted(dates_aapl & dates_sp500)
+print("Jours communs de cotation :", common_trading_days)
+
+
+# --- 
+# # 4. Functions & Scope (Fonctions & Portée des Variables)
+# 
+# Les fonctions permettent d'encapsuler la logique, d'éviter les duplications de code (DRY - Don't Repeat Yourself) et de rendre le système testable unitairement.
+
+# ### 4.1 Anatomie d'une Fonction : `def`, Arguments & `return` vs `print`
+# 
+# * ⚠️ **Distinction fondamentale** :
+#   * `return` renvoie une valeur réutilisable par le reste du programme.
+#   * `print()` affiche du texte sur la console sans renvoyer de donnée (`return None`).
+
+# In[10]:
+
+
+# Fonction pure avec typage (type hints) et docstring
+def calculate_relative_performance(asset_return: float, benchmark_return: float) -> float:
+    """
+    Calcule la surperformance (ou sous-performance) relative en points de pourcentage.
+
+    Args:
+        asset_return (float): Rendement de l'actif en pourcentage.
+        benchmark_return (float): Rendement du benchmark en pourcentage.
+
+    Returns:
+        float: Différence (R_actif - R_benchmark).
+    """
+    return asset_return - benchmark_return
+
+# Appel et réutilisation du résultat
+alpha = calculate_relative_performance(6.48, 2.15)
+print(f"Surperformance calculée : {alpha:+.2f} points de pourcentage.")
+
+
+# ### 4.2 Portée des Variables (Variable Scope - Règle LEGB)
+# 
+# * **Concept** : Les variables créées à l'intérieur d'une fonction ont une **portée locale**. Elles disparaissent dès la fin de l'exécution de la fonction et ne polluent pas l'espace global.
+# * **Règle LEGB** : Python cherche les variables dans cet ordre : **L**ocal ➔ **E**nclosing ➔ **G**lobal ➔ **B**uilt-in.
+
+# In[11]:
+
+
+GLOBAL_TAX_RATE = 0.30 # Variable globale (constante)
+
+def compute_net_gain(gross_gain: float) -> float:
+    local_discount = 0.05 # Variable locale (n'existe qu'ici)
+    tax = gross_gain * (GLOBAL_TAX_RATE - local_discount)
+    return gross_gain - tax
+
+net = compute_net_gain(1000.0)
+print(f"Gain net après imposition : {net:.2f} USD")
+
+# Accéder à local_discount ici lève un NameError (variable locale détruite) :
+try:
+    print(local_discount)
+except NameError as err:
+    print(f"NameError attendu : {err}")
+
+
+# --- 
+# # 5. Exceptions & Robustness (Gestion des Erreurs)
+# 
+# Une application robuste ne doit jamais planter brutalement avec un traceback non géré.
+
+# ### 5.1 Le Bloc `try ... except ... else ... finally`
+# 
+# * `try` : Le code susceptible de déclencher une exception.
+# * `except ExceptionType` : Le traitement de l'erreur si elle se produit.
+# * `else` : Exécuté uniquement si aucune exception n'a été levée.
+# * `finally` : Exécuté dans tous les cas (ex: fermeture d'un fichier ou d'une connexion réseau).
+
+# In[12]:
+
+
+def safe_divide_prices(p_end: float, p_start: float) -> float:
+    """Division sécurisée évitant le crash ZeroDivisionError."""
+    try:
+        result = p_end / p_start
+    except ZeroDivisionError:
+        print("⚠️ Alerte : Cours initial nul, impossible de diviser par zéro.")
+        return 1.0 # Base neutre
+    except TypeError as err:
+        print(f"⚠️ Alerte type : {err}")
+        return 0.0
+    else:
+        return result
+
+print("Test normal :", safe_divide_prices(266.20, 250.00))
+print("Test zéro   :", safe_divide_prices(266.20, 0.00))
+
+
+# --- 
+# # 6. Problem Solving & Algorithmic Patterns
+# 
+# Comment traduire un besoin financier métier en code Python élégant ?
+
+# ### 6.1 Le Pattern Accumulateur vs Compréhension de Liste
+# 
+# * **Problème** : Extraire uniquement les observations appartenant au ticker `"AAPL"` depuis une liste hétérogène de prix.
+
+# In[13]:
+
+
+raw_market_rows = [
+    {"ticker": "AAPL", "close": 250.00},
+    {"ticker": "SP500", "close": 6600.00},
+    {"ticker": "AAPL", "close": 251.30},
+    {"ticker": "SP500", "close": 6612.00},
+]
+
+# Approche 1 : Accumulateur impératif (Boucle classique)
+aapl_rows_imperative = []
+for row in raw_market_rows:
+    if row["ticker"] == "AAPL":
+        aapl_rows_imperative.append(row)
+
+# Approche 2 : Compréhension de liste (Pythonique, idiomatique, plus rapide)
+aapl_rows_pythonic = [row for row in raw_market_rows if row["ticker"] == "AAPL"]
+
+assert aapl_rows_imperative == aapl_rows_pythonic
+print(f"Observations extraites avec succès : {len(aapl_rows_pythonic)}")
+
+
+# ### 6.2 Le Pattern d'Indexation par Dictionnaire ($O(N) \rightarrow O(1)$)
+# 
+# * **Problème** : Trouver le cours d'un actif à une date donnée sans parcourir toute la liste à chaque fois.
+# * **Solution** : Transformer la liste en table de hachage (dictionnaire) indexée par date avec une **Dict Comprehension**.
+
+# In[14]:
+
+
+# Dict Comprehension d'indexation
+market_series = [
+    {"date": "2026-09-01", "close": 250.00},
+    {"date": "2026-09-02", "close": 251.30},
+]
+
+# Indexation : {clé: valeur pour élément dans collection}
+by_date_index = {row["date"]: row for row in market_series}
+
+# Recherche instantanée O(1) :
+target_date = "2026-09-02"
+print(f"Observation au {target_date} :", by_date_index[target_date])
+
+
+# --- 
+# # 7. Debugging (Diagnostic & Résolution de Bugs)
+# 
+# Déboguer est 50% du travail d'un développeur. Maîtriser les outils de diagnostic permet de gagner des heures.
+
+# ### 7.1 Lire un Traceback Python
+# 
+# Quand une erreur survient, Python affiche un **Traceback** :
+# 1. **Regarder la dernière ligne en premier** : Elle donne le type d'erreur (`KeyError`, `IndexError`, `TypeError`) et le message explicatif.
+# 2. **Remonter à l'avant-dernière ligne** : Elle indique le fichier et la ligne exacte de votre code où l'erreur est survenue.
+
+# In[15]:
+
+
+# Démonstration d'inspection interactive avec type(), len() et assertions assert
+sample_row = {"ticker": "AAPL", "close": 250.00}
+
+# Outils de diagnostic instantanés :
+print("Type de la variable :", type(sample_row))
+print("Clés présentes      :", list(sample_row.keys()))
+
+# Assertion contractuelle (lève AssertionError si faux) :
+assert "ticker" in sample_row, "Le dictionnaire doit contenir la clé 'ticker'"
+assert isinstance(sample_row["close"], (int, float)), "Le cours doit être un nombre"
+print("✅ Validations contractuelles réussies !")
+
+
+# --- 
+# # 8. Small Programs & Architecture Modulaire
+# 
+# Passer d'une suite de cellules Jupyter isolées à un programme Python structuré, maintenable et réutilisable.
+
+# ### 8.1 Gestion Moderne des Fichiers avec `pathlib.Path`
+# 
+# * `pathlib` gère automatiquement les séparateurs `/` sous Linux/macOS et `\` sous Windows.
+# * Permet de naviguer dans l'arborescence avec `.parent` et de vérifier l'existence avec `.exists()`.
+
+# In[16]:
+
+
+from pathlib import Path
+
+def find_project_root(start=None):
+    """Remonte l'arborescence jusqu'au dossier qui contient data/sample/instruments.json."""
+    start = (start or Path.cwd()).resolve()
+    for candidate in (start, *start.parents):
+        if (candidate / "data" / "sample" / "instruments.json").exists():
+            return candidate
+    raise FileNotFoundError("Racine du projet introuvable : lance le notebook depuis le dépôt (data/sample/ manquant).")
+
+# Résolution robuste de la racine du projet (quel que soit le dossier du notebook)
+CWD = Path.cwd()
+PROJECT_ROOT = find_project_root()
+DATA_DIR = PROJECT_ROOT / "data" / "sample"
+
+print("Répertoire de travail :", CWD)
+print("Racine du projet      :", PROJECT_ROOT)
+print("Dossier de données    :", DATA_DIR)
+print("Le dossier existe-t-il?:", DATA_DIR.is_dir())
+
+
+# ### 8.2 Le Bloc Idiomatique `if __name__ == '__main__':`
+# 
+# * Pourquoi ? Lorsqu'un fichier est importé (`import src.analytics`), ce bloc **n'est pas exécuté**.
+# * Lorsqu'il est exécuté en ligne de commande (`python src/main.py`), Python assigne `__name__ = '__main__'` et lance le bloc.
+
+# In[17]:
+
+
+def build_sample_report():
+    return "Rapport financier généré avec succès."
+
+if __name__ == "__main__":
+    report = build_sample_report()
+    print("Exécution CLI directe :", report)
+
+
+# --- 
+# # 9. MarketPulse : La Synthèse Complète
+# 
+# Voici comment **toutes les briques** que nous venons d'explorer s'assemblent pour former le pipeline exécuté dans `src/main.py` :
+
+# In[18]:
+
+
+import json
+import csv
+
+# 1. I/O : Chargement des métadonnées (JSON)
+with open(DATA_DIR / "instruments.json", encoding="utf-8") as f:
+    metadata = json.load(f)
+
+# 2. I/O : Chargement des prix et conversion numérique (CSV)
+with open(DATA_DIR / "prices.csv", encoding="utf-8") as f:
+    raw_prices = list(csv.DictReader(f))
+
+# 3. Control Flow & Data Structures : Filtrage par ticker
+inst_sym = metadata["instrument"]["ticker"]
+bench_sym = metadata["benchmark"]["ticker"]
+
+inst_prices = [row for row in raw_prices if row["ticker"] == inst_sym]
+bench_prices = [row for row in raw_prices if row["ticker"] == bench_sym]
+
+# 4. Functions : Helpers de calcul
+def get_close(row: dict) -> float:
+    return float(row["close"])
+
+inst_start = get_close(inst_prices[0])
+inst_end = get_close(inst_prices[-1])
+inst_return = ((inst_end / inst_start) - 1.0) * 100.0
+
+# 5. Formatage de sortie
+print("=== Synthèse Démonstrateur MarketPulse ===")
+print(f"Instrument : {inst_sym} ({metadata['instrument']['name']})")
+print(f"Période    : {inst_prices[0]['date']} -> {inst_prices[-1]['date']}")
+print(f"Premier    : {inst_start:.2f} {metadata['instrument']['currency']}")
+print(f"Dernier    : {inst_end:.2f} {metadata['instrument']['currency']}")
+print(f"Rendement  : {inst_return:+.2f}%")
+print("\n🚀 Modèle mental Python validé avec succès pour MarketPulse !")
+
+
+# --- 
+# ## 🎓 Prochaines Étapes pour les Étudiants
+# 
+# Maintenant que vous avez assimilé la syntaxe, les types, le contrôle de flux, les structures de données, les fonctions, la gestion d'erreurs et la modularité :
+# 
+# 1. 🛠️ Ouvrez **[`00_td02_sandbox.ipynb`](00_td02_sandbox.ipynb)** pour prototyper interactivement l'exercice complet du **TD02**.
+# 2. 💻 Transférez votre code dans **`src/main.py`** et validez l'exécution en terminal (`python src/main.py`).
+# 3. 🌿 Vous serez ensuite fin prêts pour aborder le workflow Git à partir du **TD03** et les notebooks collaboratifs **01 à 05** !
