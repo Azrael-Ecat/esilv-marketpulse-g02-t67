@@ -186,6 +186,41 @@ calculate once
 present many times
 ```
 
+## How to run
+
+From the repository root, run:
+
+```bash
+python src/main.py
+```
+
+Example output:
+
+```text
+=== MarketPulse ===
+Market configuration
+Period   : 1 month
+Interval : Daily
+Provider : CSV
+
+Instrument
+AAPL - Apple Inc.
+Market       : NASDAQ
+Observations : 21
+First date   : 2026-09-01
+Last date    : 2026-09-30
+First close  : 250.00 USD
+Last close   : 266.20 USD
+
+Benchmark
+SP500 - S&P 500
+Market       : US
+Observations : 21
+First date   : 2026-09-01
+Last date    : 2026-09-30
+First close  : 6600.00
+Last close   : 6742.00
+```
 ## Canonical runtime
 
 Terminal:
@@ -203,6 +238,7 @@ python src/dashboard.py
 These are the two canonical CORE runtime commands.
 
 The instructor starter repository does not necessarily contain every later-stage student file on day one. Files appear progressively during the lab sequence.
+
 
 ## Installation
 

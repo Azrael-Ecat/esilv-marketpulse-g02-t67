@@ -12,7 +12,7 @@
 |---|---|
 | Enzo Catheline | @Azrael-Ecat |
 | Ilyas kabchi | @Ilyasskka |
-| Jules | @Jules594 |
+| Jules Nguyen-Khoa-Man | @Jules594 |
 
 ## Repository
 
